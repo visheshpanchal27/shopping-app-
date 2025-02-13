@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Shopping Center</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Shopping Center</div>
+      <div class="auth-section" id="authSection">
+        <button onclick="showLoginModal()">Login</button>
+      </div>
+      <div class="nav-icons">
+        <div class="wishlist-icon">
+          <i class="fas fa-heart"></i>
+          <span id="wishlist-count">0</span>
+        </div>
+        <div class="cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-count">0</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="multipanel-layout">
+    <div class="panel categories-panel">
+      <h2>Categories</h2>
+      <ul id="categories">
+        <li class="active">All Products</li>
+        <li>Electronics</li>
+        <li>Fashion</li>
+        <li>Home & Living</li>
+      </ul>
+    </div>
+
+    <div class="panel products-panel">
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search products...">
+        <select id="sortSelect">
+          <option value="default">Sort by</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="rating">Rating</option>
+        </select>
+      </div>
+      <div class="products-grid" id="products">
+        <div class="product-card">
+          <h3>Product Name 1</h3>
+          <div class="price">$99.99</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            <span>(4.5)</span>
+          </div>
+          <div class="stock-status">In Stock</div>
+          <div class="card-buttons">
+            <button class="add-to-wishlist" onclick="addToWishlist()">Add to Wishlist</button>
+            <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+            <button class="like-button" onclick="likeItem(this)">Like</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <h3>Product Name 2</h3>
+          <div class="price">$149.99</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <span>(5.0)</span>
+          </div>
+          <div class="stock-status">In Stock</div>
+          <div class="card-buttons">
+            <button class="add-to-wishlist" onclick="addToWishlist()">Add to Wishlist</button>
+            <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+            <button class="like-button" onclick="likeItem(this)">Like</button>
+          </div>
+        </div>
+        <!-- Add more product cards as needed -->
+      </div>
+    </div>
+
+    <div class="panel details-panel" id="productDetails">
+      <h2>Product Details</h2>
+      <div class="product-info">
+        Select a product to view details
+      </div>
+    </div>
+    
+    <div class="cart-modal" id="cartModal">
+      <div class="cart-content">
+        <h2>Shopping Cart</h2>
+        <div id="cart-items"></div>
+        <div class="cart-total">
+          <span>Total: $</span>
+          <span id="cart-total">0</span>
+        </div>
+        <button class="checkout-btn" onclick="checkout()">Checkout</button>
+      </div>
+    </div>
+    
+    <div class="login-modal" id="loginModal">
+      <div class="login-content">
+        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="script.js"></script>
+  <script>
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'block';
+    }
+
+    function likeItem(button) {
+      button.classList.toggle('liked');
+    }
+  </script>
+</body>
+</html>
