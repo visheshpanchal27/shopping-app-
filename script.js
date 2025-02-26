@@ -1,10 +1,9 @@
-
 const products = [
     {
       id: 1,
       name: "Smartphone",
       price: 499.99,
-      image: "phone.jpg",
+      image: "img/phone.jpg",
       description: "Latest model smartphone with advanced features",
       category: "Electronics",
       rating: 4.5,
@@ -14,7 +13,7 @@ const products = [
       id: 2,
       name: "Laptop",
       price: 999.99,
-      image: "pexels-craigmdennis-205421.jpg",
+      image: "img/pexels-craigmdennis-205421.jpg",
       description: "Powerful laptop for work and gaming",
       category: "Electronics",
       rating: 4.8,
@@ -24,7 +23,7 @@ const products = [
       id: 3,
       name: "Designer T-Shirt",
       price: 29.99,
-      image: "ck.jpg",
+      image: "img/ck.jpg",
       description: "Premium cotton t-shirt with modern design",
       category: "Fashion",
       rating: 4.2,
@@ -34,7 +33,7 @@ const products = [
       id: 4,
       name: "Running Shoes",
       price: 79.99,
-      image: "nike.png",
+      image: "img/nike.png",
       description: "Comfortable running shoes with great support",
       category: "Fashion",
       rating: 4.6,
@@ -44,7 +43,7 @@ const products = [
       id: 5,
       name: "Coffee Maker",
       price: 89.99,
-      image: "coffy.jpeg",
+      image: "img/coffy.jpeg",
       description: "Automatic coffee maker with timer",
       category: "Home & Living",
       rating: 4.3,
@@ -54,7 +53,7 @@ const products = [
       id: 6,
       name: "Bed Sheet Set",
       price: 49.99,
-      image: "bad.jpg",
+      image: "img/bad.jpg",
       description: "100% cotton bed sheet set, queen size",
       category: "Home & Living",
       rating: 4.7,
@@ -66,6 +65,7 @@ const products = [
   let wishlist = [];
   
   function renderProducts(category = 'All Products') {
+    showSkeletonLoading();
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const sortBy = document.getElementById('sortSelect')?.value || 'default';
     const productsContainer = document.getElementById('products');
@@ -93,28 +93,29 @@ const products = [
         break;
     }
       
-    productsContainer.innerHTML = filteredProducts.map(product => `
-      <div class="product-card" onclick="showProductDetails(${product.id})">
-        <img src="${product.image}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p class="price">$${product.price}</p>
-        <div class="product-rating">
-          ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5-Math.floor(product.rating))}
-          <span>(${product.rating})</span>
+    setTimeout(() => {
+      productsContainer.innerHTML = filteredProducts.map(product => `
+        <div class="product-card" onclick="showProductDetails(${product.id})">
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <div class="price">$${product.price.toFixed(2)}</div>
+          <div class="product-rating">
+            ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5-Math.floor(product.rating))}
+            <span>(${product.rating})</span>
+          </div>
+          <div class="stock-cart-row">
+            <div class="stock-status ${product.stock < 5 ? 'low-stock' : ''}">
+              ${product.stock < 5 ? 'Only ' + product.stock + ' left!' : 'In Stock'}
+            </div>
+            <button class="add-to-cart-mini" onclick="event.stopPropagation(); addToCart(${product.id})">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
         </div>
-        <p class="stock-status ${product.stock < 5 ? 'low-stock' : ''}">
-          ${product.stock < 5 ? 'Only ' + product.stock + ' left!' : 'In Stock'}
-        </p>
-        <div class="card-buttons">
-          <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(${product.id})">
-            <i class="fas fa-shopping-cart"></i> Add to Cart
-          </button>
-          <button class="add-to-wishlist" onclick="event.stopPropagation(); toggleWishlist(${product.id})">
-            <i class="fas fa-heart"></i>
-          </button>
-        </div>
-      </div>
-    `).join('');
+      `).join('');
+      
+      hideLoading(productsContainer);
+    }, 500);
   }
   
   window.showProductDetails = (productId) => {
@@ -122,12 +123,43 @@ const products = [
     const detailsPanel = document.getElementById('productDetails');
     
     detailsPanel.innerHTML = `
-      <h2>${product.name}</h2>
-      <img src="${product.image}" alt="${product.name}" style="width: 100%; max-width: 200px; margin: 1rem 0;">
-      <p class="price">$${product.price}</p>
-      <p>${product.description}</p>
-      <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+      <div class="product-details-container">
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}">
+        </div>
+        <div class="product-info">
+          <h2>${product.name}</h2>
+          <div class="price">$${product.price.toFixed(2)}</div>
+          <div class="product-rating">
+            ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5-Math.floor(product.rating))}
+            <span>(${product.rating})</span>
+          </div>
+          <div class="stock-cart-row">
+            <div class="stock-status ${product.stock < 5 ? 'low-stock' : ''}">
+              ${product.stock < 5 ? 'Only ' + product.stock + ' left!' : 'In Stock'}
+            </div>
+            <button class="add-to-cart" onclick="addToCart(${product.id})">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+          </div>
+          <p class="description">${product.description}</p>
+          <div class="category-tag">
+            Category: <span>${product.category}</span>
+          </div>
+          <div class="action-buttons">
+            <button class="add-to-wishlist" onclick="toggleWishlist(${product.id})">
+              <i class="fas fa-heart"></i> Add to Wishlist
+            </button>
+          </div>
+        </div>
+      </div>
     `;
+
+    // Highlight the selected product card
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+    document.querySelector(`.product-card[onclick="showProductDetails(${productId})"]`)?.classList.add('selected');
   };
   
   window.addToCart = (productId) => {
@@ -138,18 +170,25 @@ const products = [
       updateCartCount();
       renderCart();
       renderProducts(document.querySelector('#categories li.active').textContent);
+      showNotification(`${product.name} added to cart!`);
     } else {
-      alert('Sorry, this item is out of stock!');
+      showNotification('Sorry, this item is out of stock!', 'error');
     }
   };
   
   window.toggleWishlist = (productId) => {
     const index = wishlist.findIndex(p => p.id === productId);
+    const button = document.querySelector(`[data-wishlist="${productId}"]`);
+    
     if (index === -1) {
       const product = products.find(p => p.id === productId);
       wishlist.push(product);
+      button.classList.add('active');
+      showToast('Added to wishlist!');
     } else {
       wishlist.splice(index, 1);
+      button.classList.remove('active');
+      showToast('Removed from wishlist!');
     }
     updateWishlistCount();
   };
@@ -259,7 +298,97 @@ const products = [
     renderProducts(document.querySelector('#categories li.active').textContent);
   });
   
+  // Add toast notification
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+  
   // Initialize the page
   renderProducts();
   updateCartCount();
+  
+  // Add loading state
+  function showLoading(element) {
+    element.classList.add('loading');
+  }
+  
+  function hideLoading(element) {
+    element.classList.remove('loading');
+  }
+  
+  // Add skeleton loading for products
+  function showSkeletonLoading() {
+    const productsContainer = document.getElementById('products');
+    const skeletonHTML = Array(6).fill(`
+      <div class="product-card skeleton">
+        <div style="height: 200px;"></div>
+        <div style="height: 24px; margin: 1rem 0;"></div>
+        <div style="height: 18px; width: 60%;"></div>
+        <div style="height: 18px; margin: 0.5rem 0;"></div>
+        <div style="height: 36px; margin-top: 1rem;"></div>
+      </div>
+    `).join('');
+    
+    productsContainer.innerHTML = skeletonHTML;
+  }
+  
+  // Add notification system
+  function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `toast ${type}`;
+    notification.innerHTML = `
+      <div class="toast-content">
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+  }
+  
+  // Enhance login modal
+  function enhanceLoginModal() {
+    const loginContent = document.querySelector('.login-content');
+    loginContent.innerHTML = `
+      <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+      <h2>Welcome Back</h2>
+      <div class="input-group">
+        <input type="email" id="email" placeholder=" ">
+        <label for="email">Email</label>
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder=" ">
+        <label for="password">Password</label>
+      </div>
+      <button onclick="login()" class="login-btn">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      <div class="social-login">
+        <button class="google-btn">
+          <i class="fab fa-google"></i> Continue with Google
+        </button>
+      </div>
+    `;
+  }
+  
+  // Initialize enhancements
+  document.addEventListener('DOMContentLoaded', () => {
+    enhanceLoginModal();
+    
+    // Add notification dot to cart if items present
+    if (cart.length > 0) {
+      const cartIcon = document.querySelector('.cart-icon');
+      const dot = document.createElement('div');
+      dot.className = 'notification-dot';
+      cartIcon.appendChild(dot);
+    }
+  });
   
